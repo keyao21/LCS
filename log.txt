@@ -1,0 +1,5 @@
+MY LOG
+
+2/7/2018
+- started coding up FTLE implementation with focus on flexibility, such as dimension size (2 hrs)
+ 
