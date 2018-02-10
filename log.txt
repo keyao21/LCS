@@ -1,5 +1,15 @@
 MY LOG
 
 2/7/2018
-- started coding up FTLE implementation with focus on flexibility, such as dimension size (2 hrs)
+(2 hrs)
+- started coding up FTLE implementation with focus on OOP and flexibility of parameters, such as dimension size and resolution
+ 
+2/9/2018
+(7 hrs)
+- finished constructing FTLE class with map creater and plotter. set optional arguments for better testing capabilities
+- tested mapper and plotter for various resolutions and compared time 
+- created getEstimatedVelocity function to test discretized velocity fields and get "unknown points" of velocity by using velocity information of nearest point with known velocity information
+- currently working on using binlinear interpolation to find velocity for "unknown points"
+
+
  
