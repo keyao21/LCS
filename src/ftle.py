@@ -9,51 +9,38 @@ import pdb
 
 class FTLE():
     def __init__(self, **kwargs):
-        self.length = 100
-        self.height = 50
-        self.percentLength = 1  # set resolution of descretization
-        self.percentHeight = 1
-        self.minx = 0.01
-        self.miny = 0.01
-        self.maxx = 2
-        self.maxy = 1
-        self.delta = 1e-5
-        self.earthRotation = 1
-        self.phi = np.pi*40.7128/180  # lattitude
-        self.coriolis = 2*self.earthRotation*np.sin(self.phi)
-        self.dimensions = 2
-        self.state = np.zeros((self.length,4))
-        self.dt = 0.1
-        self.elapsedTime = 20
-        self.mappingfile = None
-        self.estimateVelocity = False
+        self.length = kwargs.get('length', 100)
+        self.height = kwargs.get('height', 50)
+        self.percentLength = kwargs.get('percentLength', 1)  # set resolution of descretization
+        self.percentHeight = kwargs.get('percentHeight', 1)
+        self.minx = kwargs.get('minx', 0.01)
+        self.miny = kwargs.get('miny', 0.01)
+        self.maxx = kwargs.get('maxx', 2)
+        self.maxy = kwargs.get('maxy', 1)
+        self.delta = kwargs.get('delta', 1e-5)
+        self.earthRotation = kwargs.get('earthRotation', 1)
+        self.phi = kwargs.get('phi', np.pi*40.7128/180 ) # lattitude
+        self.coriolis = kwargs.get('coriolis', 2*self.earthRotation*np.sin(self.phi))
+        self.dimensions = kwargs.get('dimensions', 2)
+        self.state = kwargs.get('state', np.zeros((self.length,4)))
+        self.dt = kwargs.get('dt', 0.1)
+        self.elapsedTime = kwargs.get('elapsedTime', 20)
+        self.mappingfile = kwargs.get('mappingfile', None)
+        self.estimateVelocity = kwargs.get('estimateVelocity', False)
 
-        self.length=kwargs['length'] if 'length' in kwargs else self.length
-        self.height=kwargs['height'] if 'height' in kwargs else self.height
-        self.percentLength=kwargs['percentLength'] if 'percentLength' in kwargs else self.percentLength 
-        self.percentHeight=kwargs['percentHeight'] if 'percentHeight' in kwargs else self.percentHeight 
-        self.delta=kwargs['delta'] if 'delta' in kwargs else self.delta
-        self.earthRotation=kwargs['earthRotation'] if 'earthRotation' in kwargs else self.earthRotation 
-        self.phi=kwargs['phi'] if 'phi' in kwargs else self.phi 
-        self.coriolis=kwargs['coriolis'] if 'coriolis' in kwargs else self.coriolis 
-        self.dimensions=kwargs['dimensions'] if 'dimensions' in kwargs else self.dimensions 
-        self.state=kwargs['state'] if 'state' in kwargs else self.state 
-        self.dt=kwargs['dt'] if 'dt' in kwargs else self.dt 
-        self.elapsedTime=kwargs['elapsedTime'] if 'elapsedTime' in kwargs else self.elapsedTime 
-        self.mappingfile=kwargs['mappingfile'] if 'mappingfile' in kwargs else self.mappingfile 
-        self.estimateVelocity=kwargs['estimateVelocity'] if 'estimateVelocity' in kwargs else self.estimateVelocity 
+    def velocityFunction(self, x, y, t, a = 0.1, epsilon = 0.25, w = 0.2*np.pi, dims = 2):
+        # f = epsilon*np.sin(w*t)*x**2 + (1-2*epsilon*np.sin(w*t))*x
+        # if dims == 2:
+        #     _vx = a*np.pi*np.sin(np.pi*f)*np.cos(np.pi*y)
+        #     _vy = -1*a*np.pi*np.cos(np.pi*f)*np.sin(np.pi*y)*(2*epsilon*np.sin(w*t)*x 
+        #         + (1-2*epsilon*np.sin(w*t)))
+        # elif dims == 3:
+        #     print( "not sure if we can do that yet!")
+        # # return np.vstack([vx,vy])
+        # return _vx, _vy
+        raise NotImplementedError('Implement a velocity function!')
 
 
-    def doubleGyreVelocity(self, x, y, t, a = 0.1, epsilon = 0.25, w = 0.2*np.pi, dims = 2):
-        f = epsilon*np.sin(w*t)*x**2 + (1-2*epsilon*np.sin(w*t))*x
-        if dims == 2:
-            _vx = a*np.pi*np.sin(np.pi*f)*np.cos(np.pi*y)
-            _vy = -1*a*np.pi*np.cos(np.pi*f)*np.sin(np.pi*y)*(2*epsilon*np.sin(w*t)*x 
-                + (1-2*epsilon*np.sin(w*t)))
-        elif dims == 3:
-            print( "not sure if we can do that yet!")
-        # return np.vstack([vx,vy])
-        return _vx, _vy
 
     # def getEstimatedVelocity(self, x, y, t):
     #     def find_nearest(array,values):
@@ -63,13 +50,13 @@ class FTLE():
     #     est_x = find_nearest(np.linspace(self.minx,self.maxx,self.length*self.percentLength), x)
     #     est_y = find_nearest(np.linspace(self.miny,self.maxy,self.height*self.percentHeight), y)
 
-    #     return self.doubleGyreVelocity(est_x, est_y, t)
+    #     return self.velocityFunction(est_x, est_y, t)
 
     # def getEstimatedVelocity(self, x, y, t):
     #     _xarr = np.linspace(self.minx, self.maxx, self.length*self.percentLength)
     #     _yarr = np.linspace(self.miny, self.maxy, self.height*self.percentHeight)
     #     xx_, yy_ = np.meshgrid(_xarr,_yarr)
-    #     vx_, vy_ = self.doubleGyreVelocity(xx_, yy_, t)[0], self.doubleGyreVelocity(xx_, yy_, t)[1] 
+    #     vx_, vy_ = self.velocityFunction(xx_, yy_, t)[0], self.velocityFunction(xx_, yy_, t)[1] 
     #     vxfunc, vyfunc = interpolate.interp2d(_xarr, _yarr, vx_), interpolate.interp2d(_xarr, _yarr, vy_)
     #     vx, vy = vxfunc(x, y)[0], vyfunc(x, y)[0]
     #     # print(vx)
@@ -80,11 +67,11 @@ class FTLE():
         # pdb.set_trace()
         _xarr = np.linspace(self.minx, self.maxx, self.length*self.percentLength)
         _yarr = np.linspace(self.miny, self.maxy, self.height*self.percentHeight)
-        xdata = self.doubleGyreVelocity(*np.meshgrid(_xarr, _yarr, indexing='ij', sparse=True), t)[0]
-        ydata = self.doubleGyreVelocity(*np.meshgrid(_xarr, _yarr, indexing='ij', sparse=True), t)[1]
+        xdata = self.velocityFunction(*np.meshgrid(_xarr, _yarr, indexing='ij', sparse=True), t)[0]
+        ydata = self.velocityFunction(*np.meshgrid(_xarr, _yarr, indexing='ij', sparse=True), t)[1]
         # vxfunc,vyfunc = interpolate.interp2d(_xarr, _yarr, xdata), interpolate.interp2d(_xarr, _yarr, ydata)
-        vxfunc = RegularGridInterpolator((_xarr, _yarr), xdata, method='nearest')
-        vyfunc = RegularGridInterpolator((_xarr, _yarr), ydata, method='nearest')
+        vxfunc = RegularGridInterpolator((_xarr, _yarr), xdata, method='linear')
+        vyfunc = RegularGridInterpolator((_xarr, _yarr), ydata, method='linear')
         x, y = np.clip(x,self.minx,self.maxx), np.clip(y,self.miny,self.maxy)
         points = np.transpose(np.array([x, y]))
         outxv, outxy = vxfunc(points), vyfunc(points)
@@ -92,8 +79,8 @@ class FTLE():
 
 
     def getVelocity(self, x, y, t):
-        # print(self.doubleGyreVelocity(x, y, t)[0])
-        return self.doubleGyreVelocity(x, y, t)
+        # print(self.velocityFunction(x, y, t)[0])
+        return self.velocityFunction(x, y, t)
 
 
     def update(self, state, t):
@@ -194,9 +181,9 @@ class FTLE():
         else:
             ax.set_title("{}".format(title))
         if filename is None:
-            fig.savefig('../figures/{}x{}.pdf'.format(self.length, self.height), format='pdf')
+            fig.savefig('../figures/{}x{}.pdf'.format(self.length, self.height), format='png')
         else:
-            fig.savefig('../figures/{}'.format(filename), format='pdf')
+            fig.savefig('../figures/{}'.format(filename), format='png')
 
         if display:
             plt.show()
@@ -206,14 +193,34 @@ class FTLE():
         y = np.random.rand(100)
         print( np.mean(np.subtract(self.getVelocity(x,y,20), self.getEstimatedVelocity(x,y,20))) ) 
 
+
+class doubleGyreFTLE(FTLE):
+    def __init__(self, **kwargs):
+        FTLE.__init__(self, **kwargs)
+
+    def velocityFunction(self, x, y, t, a = 0.1, epsilon = 0.25, w = 0.2*np.pi, dims = 2):
+        '''
+        Double Gyre Velocity FUnction
+        '''
+        f = epsilon*np.sin(w*t)*x**2 + (1-2*epsilon*np.sin(w*t))*x
+        if dims == 2:
+            _vx = a*np.pi*np.sin(np.pi*f)*np.cos(np.pi*y)
+            _vy = -1*a*np.pi*np.cos(np.pi*f)*np.sin(np.pi*y)*(2*epsilon*np.sin(w*t)*x 
+                + (1-2*epsilon*np.sin(w*t)))
+        elif dims == 3:
+            print( "not sure if we can do that yet!")
+        # return np.vstack([vx,vy])
+        return _vx, _vy
+
 def main():
 
     datafolder = '../data'
     mappingfile = datafolder + '/kevin_output_steps.txt'
-    test = FTLE(length=100, height=50, percentLength=0.1, percentHeight=0.1, estimateVelocity=True)
-    # test.createMapping(mappingfile)
-    # test.plotter(display=True, title='test', filename='TESTS')
-    test.testVelocityDiff()
+    # test = FTLE(length=100, height=50, percentLength=0.1, percentHeight=0.1, estimateVelocity=True)
+    test = doubleGyreFTLE(length=100, height=50, percentLength=0.1, percentHeight=0.1, estimateVelocity=True)
+    test.createMapping(mappingfile)
+    test.plotter(display=True, title='test', filename='TESTS')
+    # test.testVelocityDiff()
 
 if __name__ == '__main__':
     main()
