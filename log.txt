@@ -1,5 +1,13 @@
 MY LOG
 
+3/30/2018
+(2 hrs) 
+- documentation of bilinear interpolation and its implementation on current working double gyre code (in /docs)
+
+3/28/2018
+(3 hrs) 
+- tried to get divergence of velocity fields, still stuck
+
 2/7/2018
 (2 hrs)
 - started coding up FTLE implementation with focus on OOP and flexibility of parameters, such as dimension size and resolution
@@ -11,5 +19,7 @@ MY LOG
 - created getEstimatedVelocity function to test discretized velocity fields and get "unknown points" of velocity by using velocity information of nearest point with known velocity information
 - currently working on using binlinear interpolation to find velocity for "unknown points"
 
-
+2/10/2018
+(2 hrs)
+-completed working bilinear interpolation implementation and testing information loss effects for various resolutions
  
