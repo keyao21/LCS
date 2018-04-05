@@ -1,5 +1,10 @@
 MY LOG
 
+4/5/2018
+(4 hrs)
+- working divergence calculations of velocity field and comparisons for different resolutions 
+- documentation of divergence calculation
+
 3/30/2018
 (2 hrs) 
 - documentation of bilinear interpolation and its implementation on current working double gyre code (in /docs)
